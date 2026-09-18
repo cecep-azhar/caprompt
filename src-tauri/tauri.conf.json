@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "caprompt",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.cecepazhar.caprompt",
   "build": {
     "frontendDist": "../",
     "devUrl": "http://localhost:8787",
