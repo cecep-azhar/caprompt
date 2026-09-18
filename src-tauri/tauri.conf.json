@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "identifier": "com.cecepazhar.caprompt",
   "build": {
-    "frontendDist": "../",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:8787",
     "beforeDevCommand": "go run server.go"
   },
