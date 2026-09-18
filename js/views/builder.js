@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 import { getAll, putRecord } from '../store.js';
 import { SEED_TEMPLATES } from '../seed.js';
 import { render } from '../engine.js';
 import { toast, copyToClipboard } from '../ui.js';
+import { iconSvg } from '../icons.js';
 
 async function findTemplate(id) {
   const seedMatch = SEED_TEMPLATES.find((t) => t.id === id);
@@ -15,47 +17,73 @@ export async function renderBuilder(root, id) {
   const template = await findTemplate(id);
 
   if (!template) {
-    const notFound = document.createElement('p');
-    notFound.textContent = `Template "${id}" tidak ditemukan.`;
-    root.appendChild(notFound);
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = `<div class="empty-icon">${iconSvg('library', { size: 20 })}</div>`;
+    const title = document.createElement('p');
+    title.className = 'empty-title';
+    title.textContent = 'Template tidak ditemukan';
+    empty.appendChild(title);
+    const subtitle = document.createElement('p');
+    subtitle.className = 'empty-subtitle';
+    subtitle.textContent = `"${id}" tidak ada di Pustaka.`;
+    empty.appendChild(subtitle);
+    root.appendChild(empty);
     return;
   }
 
-  const heading = document.createElement('h1');
-  heading.textContent = template.title || template.id;
-  root.appendChild(heading);
+  const head = document.createElement('div');
+  head.className = 'page-head';
+  const headInner = document.createElement('div');
+  const title = document.createElement('h1');
+  title.className = 'page-title';
+  title.textContent = template.title || template.id;
+  headInner.appendChild(title);
+  const subtitle = document.createElement('p');
+  subtitle.className = 'page-subtitle';
+  subtitle.textContent = `${(template.runVariables || []).length} variabel · Rakit`;
+  headInner.appendChild(subtitle);
+  head.appendChild(headInner);
+  root.appendChild(head);
 
   const form = document.createElement('form');
-  form.className = 'builder-form';
+  const fieldGroup = document.createElement('div');
+  fieldGroup.className = 'field-group';
   const inputs = {};
 
   for (const v of template.runVariables) {
+    const field = document.createElement('div');
+    field.className = 'field';
     const label = document.createElement('label');
     label.textContent = v.key;
+    field.appendChild(label);
 
-    let field;
+    let control;
     if (v.type === 'select') {
-      field = document.createElement('select');
+      control = document.createElement('select');
       for (const opt of v.options) {
         const optionEl = document.createElement('option');
         optionEl.value = opt;
         optionEl.textContent = opt;
-        field.appendChild(optionEl);
+        control.appendChild(optionEl);
       }
     } else {
-      field = document.createElement('input');
-      field.type = 'text';
-      field.value = v.isPlaceholder ? '' : v.value;
-      field.placeholder = v.isPlaceholder ? v.value : '';
+      control = document.createElement('input');
+      control.type = 'text';
+      control.value = v.isPlaceholder ? '' : v.value;
+      control.placeholder = v.isPlaceholder ? v.value : '';
     }
-    field.name = v.key;
-    label.appendChild(field);
-    form.appendChild(label);
-    inputs[v.key] = field;
+    control.name = v.key;
+    field.appendChild(control);
+    fieldGroup.appendChild(field);
+    inputs[v.key] = control;
   }
+
+  form.appendChild(fieldGroup);
 
   const renderBtn = document.createElement('button');
   renderBtn.type = 'submit';
+  renderBtn.className = 'btn btn-primary';
   renderBtn.textContent = 'Render';
   form.appendChild(renderBtn);
   root.appendChild(form);
@@ -64,20 +92,30 @@ export async function renderBuilder(root, id) {
   missingBox.className = 'missing-box';
   root.appendChild(missingBox);
 
+  const outputBox = document.createElement('div');
+  outputBox.className = 'output-box';
+  outputBox.style.marginTop = '16px';
+  outputBox.innerHTML = '<div class="output-box-header"><span>HASIL RENDER</span></div>';
   const output = document.createElement('pre');
-  output.className = 'output';
-  root.appendChild(output);
+  outputBox.appendChild(output);
+  root.appendChild(outputBox);
 
   const actions = document.createElement('div');
   actions.className = 'actions';
+  actions.style.marginTop = '12px';
+
   const copyBtn = document.createElement('button');
   copyBtn.type = 'button';
-  copyBtn.textContent = 'Salin';
+  copyBtn.className = 'btn';
+  copyBtn.innerHTML = `${iconSvg('copy', { size: 15 })}<span>Salin</span>`;
   copyBtn.disabled = true;
+
   const saveBtn = document.createElement('button');
   saveBtn.type = 'button';
-  saveBtn.textContent = 'Simpan sebagai Run';
+  saveBtn.className = 'btn';
+  saveBtn.innerHTML = `${iconSvg('save', { size: 15 })}<span>Simpan sebagai Run</span>`;
   saveBtn.disabled = true;
+
   actions.appendChild(copyBtn);
   actions.appendChild(saveBtn);
   root.appendChild(actions);

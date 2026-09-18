@@ -11,9 +11,13 @@ const SHELL = [
   'js/store.js',
   'js/ui.js',
   'js/seed.js',
+  'js/icons.js',
+  'js/theme.js',
+  'js/version.js',
   'js/views/library.js',
   'js/views/builder.js',
   'js/views/history.js',
+  'js/views/settings.js',
   'manifest.json',
 ];
 

@@ -8,8 +8,28 @@
     <link rel="manifest" href="manifest.json" />
   </head>
   <body>
-    <nav id="nav"></nav>
-    <div id="app"></div>
+    <div id="shell">
+      <aside id="sidebar">
+        <div class="brand">
+          <span class="brand-mark">cap<strong>rompt</strong></span>
+          <span class="badge" id="app-version"></span>
+        </div>
+        <div class="nav-section-label">RUANG KERJA</div>
+        <nav id="nav"></nav>
+        <div class="sidebar-footer">
+          <a id="settings-entry" class="settings-entry" href="#/settings"></a>
+        </div>
+      </aside>
+      <div id="main">
+        <header id="topbar">
+          <div class="breadcrumb" id="breadcrumb"></div>
+          <div class="topbar-actions">
+            <div class="theme-toggle" id="theme-toggle"></div>
+          </div>
+        </header>
+        <div id="app"></div>
+      </div>
+    </div>
     <script type="module" src="js/app.js"></script>
   </body>
 </html>
