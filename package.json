@@ -1,0 +1,11 @@
+{
+  "name": "caprompt",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CAPrompt - prompt studio lokal-first, tanpa build step, tanpa dependensi npm",
+  "scripts": {
+    "test": "node --test",
+    "seed": "node tools/build-seed.mjs"
+  }
+}
