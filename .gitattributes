@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Go tooling (gofmt) requires LF; never let Windows checkout convert to CRLF.
+*.go text eol=lf
