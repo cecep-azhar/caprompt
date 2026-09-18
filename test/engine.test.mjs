@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { render, expandTokens } from '../js/engine.js';
+import { render, expandTokens, renderChain, DEFAULT_CHAIN_SEPARATOR } from '../js/engine.js';
 
 test('substitusi variabel sederhana', () => {
   const { text, missing } = render('Halo {{NAME}}!', { NAME: 'Budi' });
@@ -46,4 +46,27 @@ test('expandTokens memakai jam yang dikunci, tidak bergantung jam sistem', () =>
   const now = new Date('2026-03-05T10:00:00Z'); // 17:00 WIB
   const out = expandTokens('{{date}} {{time}} {{datetime}}', { now });
   assert.equal(out, '2026-03-05 17:00 WIB 2026-03-05 17:00 WIB');
+});
+
+test('renderChain: 3 prompt digabung urut sesuai, dipisah separator default', () => {
+  const items = [
+    { body: 'Satu {{A}}', vars: { A: '1' } },
+    { body: 'Dua {{B}}', vars: { B: '2' } },
+    { body: 'Tiga {{C}}', vars: { C: '3' } },
+  ];
+  const { text, parts } = renderChain(items);
+  assert.deepEqual(parts, ['Satu 1', 'Dua 2', 'Tiga 3']);
+  assert.equal(text, `Satu 1${DEFAULT_CHAIN_SEPARATOR}Dua 2${DEFAULT_CHAIN_SEPARATOR}Tiga 3`);
+});
+
+test('renderChain: pemisah kustom dipakai persis, tidak ditambah/dikurangi', () => {
+  const items = [{ body: 'X' }, { body: 'Y' }];
+  const { text } = renderChain(items, { separator: '\n===\n' });
+  assert.equal(text, 'X\n===\nY');
+});
+
+test('renderChain: missing per-item dilaporkan terpisah, tidak dicampur', () => {
+  const items = [{ body: '{{A}}', vars: {} }, { body: '{{B}}', vars: { B: 'ok' } }];
+  const { missing } = renderChain(items);
+  assert.deepEqual(missing, [['A'], []]);
 });

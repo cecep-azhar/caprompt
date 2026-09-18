@@ -110,3 +110,16 @@ export function render(body, vars = {}, { now = new Date() } = {}) {
 
   return { text: out, missing };
 }
+
+export const DEFAULT_CHAIN_SEPARATOR = '\n\n---\n\n';
+
+// Rangkai: render beberapa {body, vars} lalu gabungkan urut sesuai `items`,
+// dipisah `separator`. Tidak mereimplementasi render — memanggil ulang render().
+export function renderChain(items, { separator = DEFAULT_CHAIN_SEPARATOR, now = new Date() } = {}) {
+  const results = items.map((item) => render(item.body, item.vars || {}, { now }));
+  return {
+    text: results.map((r) => r.text).join(separator),
+    parts: results.map((r) => r.text),
+    missing: results.map((r) => r.missing),
+  };
+}

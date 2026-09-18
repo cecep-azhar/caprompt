@@ -4,9 +4,12 @@ import { SEED_TEMPLATES } from '../seed.js';
 import { toast, copyToClipboard } from '../ui.js';
 import { iconSvg } from '../icons.js';
 
-function templateTitle(templateId) {
-  const seedMatch = SEED_TEMPLATES.find((t) => t.id === templateId);
-  return seedMatch ? seedMatch.title : templateId;
+function runTitle(run) {
+  if (run.templateId === 'rangkai' && Array.isArray(run.chain)) {
+    return run.chain.map((c) => c.title).join(' + ');
+  }
+  const seedMatch = SEED_TEMPLATES.find((t) => t.id === run.templateId);
+  return seedMatch ? seedMatch.title : run.templateId;
 }
 
 function formatCreatedAt(iso) {
@@ -55,7 +58,7 @@ export async function renderHistory(root) {
 
     const meta = document.createElement('p');
     meta.className = 'detail-meta';
-    meta.textContent = `${templateTitle(run.templateId)} — ${formatCreatedAt(run.createdAt)}`;
+    meta.textContent = `${runTitle(run)} — ${formatCreatedAt(run.createdAt)}`;
     card.appendChild(meta);
 
     const outputBox = document.createElement('div');
@@ -101,7 +104,7 @@ export async function renderHistory(root) {
     button.className = 'list-item-btn';
     const itemTitle = document.createElement('span');
     itemTitle.className = 'item-title';
-    itemTitle.textContent = templateTitle(run.templateId);
+    itemTitle.textContent = runTitle(run);
     button.appendChild(itemTitle);
     const itemMeta = document.createElement('span');
     itemMeta.className = 'item-meta';

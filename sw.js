@@ -14,12 +14,15 @@ const SHELL = [
   'js/icons.js',
   'js/theme.js',
   'js/version.js',
+  'js/templates.js',
+  'js/field-form.js',
   'js/views/library.js',
   'js/views/builder.js',
   'js/views/history.js',
   'js/views/settings.js',
   'js/views/placeholder.js',
   'js/views/buat-baru.js',
+  'js/views/rangkai.js',
   'manifest.json',
 ];
 

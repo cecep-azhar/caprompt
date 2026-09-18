@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import { getAll, putRecord } from '../store.js';
-import { SEED_TEMPLATES } from '../seed.js';
+import { putRecord } from '../store.js';
+import { findTemplateById } from '../templates.js';
 import { render } from '../engine.js';
 import { toast, copyToClipboard } from '../ui.js';
 import { iconSvg } from '../icons.js';
-
-async function findTemplate(id) {
-  const seedMatch = SEED_TEMPLATES.find((t) => t.id === id);
-  if (seedMatch) return seedMatch;
-  const userTemplates = await getAll('templates');
-  return userTemplates.find((t) => t.id === id) || null;
-}
+import { buildFieldGroup } from '../field-form.js';
 
 export async function renderBuilder(root, id) {
   root.textContent = '';
-  const template = await findTemplate(id);
+  const template = await findTemplateById(id);
 
   if (!template) {
     const empty = document.createElement('div');
@@ -47,38 +41,7 @@ export async function renderBuilder(root, id) {
   root.appendChild(head);
 
   const form = document.createElement('form');
-  const fieldGroup = document.createElement('div');
-  fieldGroup.className = 'field-group';
-  const inputs = {};
-
-  for (const v of template.runVariables) {
-    const field = document.createElement('div');
-    field.className = 'field';
-    const label = document.createElement('label');
-    label.textContent = v.key;
-    field.appendChild(label);
-
-    let control;
-    if (v.type === 'select') {
-      control = document.createElement('select');
-      for (const opt of v.options) {
-        const optionEl = document.createElement('option');
-        optionEl.value = opt;
-        optionEl.textContent = opt;
-        control.appendChild(optionEl);
-      }
-    } else {
-      control = document.createElement('input');
-      control.type = 'text';
-      control.value = v.isPlaceholder ? '' : v.value;
-      control.placeholder = v.isPlaceholder ? v.value : '';
-    }
-    control.name = v.key;
-    field.appendChild(control);
-    fieldGroup.appendChild(field);
-    inputs[v.key] = control;
-  }
-
+  const { element: fieldGroup, collectVars } = buildFieldGroup(template.runVariables);
   form.appendChild(fieldGroup);
 
   const renderBtn = document.createElement('button');
@@ -121,12 +84,6 @@ export async function renderBuilder(root, id) {
   root.appendChild(actions);
 
   let lastResult = null;
-
-  function collectVars() {
-    const vars = {};
-    for (const [key, field] of Object.entries(inputs)) vars[key] = field.value;
-    return vars;
-  }
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
