@@ -557,7 +557,8 @@ a {
 }
 
 .field input,
-.field select {
+.field select,
+.field textarea {
   width: 100%;
   padding: 9px 11px;
   border-radius: var(--radius-sm);
@@ -566,12 +567,20 @@ a {
   color: var(--fg);
 }
 
-.field input::placeholder {
+.field textarea {
+  font-family: ui-monospace, "Cascadia Code", "SF Mono", Consolas, monospace;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
   color: var(--muted-2);
 }
 
 .field input:focus,
 .field select:focus,
+.field textarea:focus,
 .search-bar:focus-within {
   outline: none;
   border-color: var(--border-strong);

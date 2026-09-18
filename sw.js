@@ -19,6 +19,7 @@ const SHELL = [
   'js/views/history.js',
   'js/views/settings.js',
   'js/views/placeholder.js',
+  'js/views/buat-baru.js',
   'manifest.json',
 ];
 

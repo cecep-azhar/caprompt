@@ -3,6 +3,7 @@ import { renderBuilder } from './views/builder.js';
 import { renderHistory } from './views/history.js';
 import { renderSettings } from './views/settings.js';
 import { renderPlaceholder } from './views/placeholder.js';
+import { renderBuatBaru } from './views/buat-baru.js';
 import { getAll } from './store.js';
 import { SEED_TEMPLATES } from './seed.js';
 import { iconSvg } from './icons.js';
@@ -31,12 +32,6 @@ const PLACEHOLDERS = {
     icon: 'chain',
     description: 'Gabungkan beberapa prompt jadi satu urutan (chain) dengan pemisah yang konsisten.',
     sourceNote: 'Butuh renderChain di js/engine.js — belum dibangun.',
-  },
-  'buat-baru': {
-    title: 'Buat Baru',
-    icon: 'sparkle',
-    description: 'Buat template prompt baru langsung dari aplikasi, tanpa menulis berkas .md manual.',
-    sourceNote: 'Saat ini template dibuat lewat prompts/*.md + node tools/build-seed.mjs.',
   },
   jalankan: {
     title: 'Jalankan',
@@ -148,6 +143,11 @@ async function route() {
   if (parts[0] === 'settings') {
     renderBreadcrumb('Pengaturan', 'settings');
     await renderSettings(root);
+    return;
+  }
+  if (parts[0] === 'buat-baru') {
+    renderBreadcrumb('Buat Baru', 'sparkle');
+    await renderBuatBaru(root);
     return;
   }
   if (PLACEHOLDERS[parts[0]]) {
