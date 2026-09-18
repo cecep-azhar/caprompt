@@ -28,10 +28,51 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+#nav {
+  display: flex;
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+}
+
+#nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+#nav a:hover {
+  color: var(--accent);
+}
+
 #app {
   max-width: 720px;
   margin: 0 auto;
   padding: 24px 16px;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.history-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 h1 {

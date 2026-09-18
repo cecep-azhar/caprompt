@@ -13,6 +13,7 @@ const SHELL = [
   'js/seed.js',
   'js/views/library.js',
   'js/views/builder.js',
+  'js/views/history.js',
   'manifest.json',
 ];
 
