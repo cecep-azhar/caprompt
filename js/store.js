@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 export const DB_NAME = 'caprompt';
 export const DB_VERSION = 1;
 export const STORES = ['templates', 'presets', 'runs', 'projects', 'kv'];

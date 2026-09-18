@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 const RUN_VARS_HEADING = /^##\s*RUN VARIABLES\s*$/im;
 const COPY_START = /^===\s*COPY MULAI DARI SINI\s*===\s*$/m;
 const COPY_END = /^===\s*COPY SAMPAI SINI\s*===\s*$/m;

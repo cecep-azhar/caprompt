@@ -1,5 +1,7 @@
 node_modules/
 dist/
+/caprompt
+/caprompt.exe
 *.db
 *.db-journal
 .env

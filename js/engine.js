@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 // SUMBER KEBENARAN RENDER — satu-satunya mesin render CAPrompt.
 // Go/Rust dilarang mereimplementasi ini (R5); mereka wajib memanggil jalur ini
 // atau membuktikan hasilnya byte-identik.
