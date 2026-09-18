@@ -16,6 +16,7 @@ const SHELL = [
   'js/version.js',
   'js/templates.js',
   'js/field-form.js',
+  'js/ai.js',
   'js/views/library.js',
   'js/views/builder.js',
   'js/views/history.js',
@@ -23,6 +24,7 @@ const SHELL = [
   'js/views/placeholder.js',
   'js/views/buat-baru.js',
   'js/views/rangkai.js',
+  'js/views/jalankan.js',
   'manifest.json',
 ];
 

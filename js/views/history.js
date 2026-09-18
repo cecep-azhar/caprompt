@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import { getAll, deleteRecord } from '../store.js';
-import { SEED_TEMPLATES } from '../seed.js';
+import { allTemplates } from '../templates.js';
 import { toast, copyToClipboard } from '../ui.js';
 import { iconSvg } from '../icons.js';
 
-function runTitle(run) {
+function runTitle(run, templates) {
   if (run.templateId === 'rangkai' && Array.isArray(run.chain)) {
     return run.chain.map((c) => c.title).join(' + ');
   }
-  const seedMatch = SEED_TEMPLATES.find((t) => t.id === run.templateId);
-  return seedMatch ? seedMatch.title : run.templateId;
+  const match = templates.find((t) => t.id === run.templateId);
+  const title = match ? match.title : run.templateId;
+  return run.viaAI ? `${title} (AI · ${run.aiModel || '?'})` : title;
 }
 
 function formatCreatedAt(iso) {
@@ -22,6 +23,7 @@ export async function renderHistory(root) {
   root.textContent = '';
 
   const runs = (await getAll('runs')).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  const templates = await allTemplates();
 
   const head = document.createElement('div');
   head.className = 'page-head';
@@ -58,7 +60,7 @@ export async function renderHistory(root) {
 
     const meta = document.createElement('p');
     meta.className = 'detail-meta';
-    meta.textContent = `${runTitle(run)} — ${formatCreatedAt(run.createdAt)}`;
+    meta.textContent = `${runTitle(run, templates)} — ${formatCreatedAt(run.createdAt)}`;
     card.appendChild(meta);
 
     const outputBox = document.createElement('div');
@@ -104,7 +106,7 @@ export async function renderHistory(root) {
     button.className = 'list-item-btn';
     const itemTitle = document.createElement('span');
     itemTitle.className = 'item-title';
-    itemTitle.textContent = runTitle(run);
+    itemTitle.textContent = runTitle(run, templates);
     button.appendChild(itemTitle);
     const itemMeta = document.createElement('span');
     itemMeta.className = 'item-meta';

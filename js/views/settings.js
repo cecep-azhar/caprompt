@@ -4,9 +4,12 @@ import { getAll } from '../store.js';
 import { SEED_TEMPLATES } from '../seed.js';
 import { iconSvg } from '../icons.js';
 import { APP_VERSION } from '../version.js';
+import { getAIConfig, setAIConfig, listModels, chatCompletion } from '../ai.js';
+import { toast } from '../ui.js';
 
 const TABS = [
   { id: 'tampilan', label: 'Tampilan', icon: 'settings' },
+  { id: 'ai', label: 'AI', icon: 'sparkle' },
   { id: 'tentang', label: 'Tentang', icon: 'info' },
 ];
 
@@ -52,6 +55,150 @@ async function renderTampilan(panel) {
   panel.appendChild(picker);
 }
 
+async function renderAI(panel) {
+  panel.textContent = '';
+
+  const h2 = document.createElement('h2');
+  h2.innerHTML = `${iconSvg('sparkle', { size: 16 })}<span>Provider AI</span>`;
+  panel.appendChild(h2);
+
+  const desc = document.createElement('p');
+  desc.className = 'settings-desc';
+  desc.textContent =
+    'Endpoint OpenAI-compatible (mis. 9router atau server lokal). API key hanya tersimpan di perangkat ini (IndexedDB) — tidak pernah ikut ekspor, kode, atau log.';
+  panel.appendChild(desc);
+
+  const config = await getAIConfig();
+
+  const urlField = document.createElement('div');
+  urlField.className = 'field';
+  const urlLabel = document.createElement('label');
+  urlLabel.textContent = 'Base URL';
+  urlField.appendChild(urlLabel);
+  const urlInput = document.createElement('input');
+  urlInput.type = 'text';
+  urlInput.placeholder = 'http://localhost:8080/v1';
+  urlInput.value = config.baseUrl || '';
+  urlField.appendChild(urlInput);
+  panel.appendChild(urlField);
+
+  const keyField = document.createElement('div');
+  keyField.className = 'field';
+  const keyLabel = document.createElement('label');
+  keyLabel.textContent = 'API Key';
+  keyField.appendChild(keyLabel);
+  const keyRow = document.createElement('div');
+  keyRow.style.display = 'flex';
+  keyRow.style.gap = '8px';
+  const keyInput = document.createElement('input');
+  keyInput.type = 'password';
+  keyInput.placeholder = 'sk-...';
+  keyInput.value = config.apiKey || '';
+  keyInput.autocomplete = 'off';
+  keyRow.appendChild(keyInput);
+  const toggleBtn = document.createElement('button');
+  toggleBtn.type = 'button';
+  toggleBtn.className = 'btn';
+  toggleBtn.textContent = 'Lihat';
+  toggleBtn.addEventListener('click', () => {
+    keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+    toggleBtn.textContent = keyInput.type === 'password' ? 'Lihat' : 'Sembunyikan';
+  });
+  keyRow.appendChild(toggleBtn);
+  keyField.appendChild(keyRow);
+  panel.appendChild(keyField);
+
+  const modelField = document.createElement('div');
+  modelField.className = 'field';
+  const modelLabel = document.createElement('label');
+  modelLabel.textContent = 'Model';
+  modelField.appendChild(modelLabel);
+  const modelRow = document.createElement('div');
+  modelRow.style.display = 'flex';
+  modelRow.style.gap = '8px';
+  const modelInput = document.createElement('input');
+  modelInput.type = 'text';
+  modelInput.placeholder = 'nama model';
+  modelInput.value = config.model || '';
+  modelInput.setAttribute('list', 'ai-model-list');
+  modelRow.appendChild(modelInput);
+  const modelDatalist = document.createElement('datalist');
+  modelDatalist.id = 'ai-model-list';
+  modelRow.appendChild(modelDatalist);
+  const loadModelsBtn = document.createElement('button');
+  loadModelsBtn.type = 'button';
+  loadModelsBtn.className = 'btn';
+  loadModelsBtn.textContent = 'Muat daftar model';
+  modelRow.appendChild(loadModelsBtn);
+  modelField.appendChild(modelRow);
+  panel.appendChild(modelField);
+
+  const statusMsg = document.createElement('p');
+  statusMsg.className = 'missing-box';
+  panel.appendChild(statusMsg);
+
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  const saveBtn = document.createElement('button');
+  saveBtn.type = 'button';
+  saveBtn.className = 'btn btn-primary';
+  saveBtn.innerHTML = `${iconSvg('save', { size: 15 })}<span>Simpan</span>`;
+  const testBtn = document.createElement('button');
+  testBtn.type = 'button';
+  testBtn.className = 'btn';
+  testBtn.textContent = 'Tes koneksi';
+  actions.appendChild(saveBtn);
+  actions.appendChild(testBtn);
+  panel.appendChild(actions);
+
+  function currentConfig() {
+    return { baseUrl: urlInput.value.trim(), apiKey: keyInput.value, model: modelInput.value.trim() };
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    await setAIConfig(currentConfig());
+    toast('Konfigurasi AI tersimpan');
+  });
+
+  loadModelsBtn.addEventListener('click', async () => {
+    statusMsg.textContent = 'Memuat daftar model...';
+    statusMsg.style.color = '';
+    const result = await listModels(currentConfig());
+    if (!result.ok) {
+      statusMsg.textContent = `Gagal memuat model: ${result.error}`;
+      statusMsg.style.color = '#ef4444';
+      return;
+    }
+    modelDatalist.textContent = '';
+    for (const id of result.models) {
+      const opt = document.createElement('option');
+      opt.value = id;
+      modelDatalist.appendChild(opt);
+    }
+    statusMsg.textContent = `${result.models.length} model ditemukan — ketik di kolom Model untuk memilih.`;
+    statusMsg.style.color = '';
+  });
+
+  testBtn.addEventListener('click', async () => {
+    statusMsg.textContent = 'Menghubungi AI (bisa 10-30 detik)...';
+    statusMsg.style.color = '';
+    testBtn.disabled = true;
+    const result = await chatCompletion({
+      ...currentConfig(),
+      messages: [{ role: 'user', content: 'Balas hanya dengan kata: OK' }],
+      maxTokens: 200,
+    });
+    testBtn.disabled = false;
+    if (!result.ok) {
+      statusMsg.textContent = `Gagal: ${result.error}`;
+      statusMsg.style.color = '#ef4444';
+      return;
+    }
+    statusMsg.textContent = `Berhasil — model (${result.model}) menjawab: "${result.text.trim()}"`;
+    statusMsg.style.color = '#22c55e';
+  });
+}
+
 async function renderTentang(panel) {
   panel.textContent = '';
 
@@ -88,7 +235,7 @@ async function renderTentang(panel) {
   }
 }
 
-const RENDERERS = { tampilan: renderTampilan, tentang: renderTentang };
+const RENDERERS = { tampilan: renderTampilan, ai: renderAI, tentang: renderTentang };
 
 export async function renderSettings(root) {
   root.textContent = '';

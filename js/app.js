@@ -5,6 +5,7 @@ import { renderSettings } from './views/settings.js';
 import { renderPlaceholder } from './views/placeholder.js';
 import { renderBuatBaru } from './views/buat-baru.js';
 import { renderRangkai } from './views/rangkai.js';
+import { renderJalankan } from './views/jalankan.js';
 import { getAll } from './store.js';
 import { SEED_TEMPLATES } from './seed.js';
 import { iconSvg } from './icons.js';
@@ -27,12 +28,6 @@ const PLACEHOLDERS = {
     icon: 'pipeline',
     description: 'Jalur wawancara → PRD → task → 5 varian prompt agent.',
     sourceNote: 'Ditangani js/pipeline.js pada peta kode — belum dibangun.',
-  },
-  jalankan: {
-    title: 'Jalankan',
-    icon: 'play',
-    description: 'Eksekusi prompt langsung ke provider AI (9router) dan lihat hasilnya di aplikasi.',
-    sourceNote: 'Butuh js/ai.js — belum dibangun.',
   },
 };
 
@@ -148,6 +143,11 @@ async function route() {
   if (parts[0] === 'rangkai') {
     renderBreadcrumb('Rangkai', 'chain');
     await renderRangkai(root);
+    return;
+  }
+  if (parts[0] === 'jalankan') {
+    renderBreadcrumb('Jalankan', 'play');
+    await renderJalankan(root);
     return;
   }
   if (PLACEHOLDERS[parts[0]]) {
