@@ -13,6 +13,12 @@ const PATHS = {
   trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
   chevron: '<path d="m9 6 6 6-6 6"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+  builder: '<path d="m14 3 7 7-9.5 9.5L3 21l1.5-8.5z"/><path d="m14 3 3.5 3.5"/>',
+  pipeline: '<path d="M4 19V5M4 19h4M8 19v-6M8 13h4M12 13V9M12 9h4M16 9V5M16 5h4"/>',
+  chain: '<path d="M9.5 14.5 14.5 9.5"/><path d="M7 17a3.5 3.5 0 0 1 0-5l2-2a3.5 3.5 0 0 1 5 0"/><path d="M17 7a3.5 3.5 0 0 1 0 5l-2 2a3.5 3.5 0 0 1-5 0"/>',
+  sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',
+  play: '<path d="M6 4.5v15l13-7.5z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
 };
 
 export function iconSvg(name, { size = 18 } = {}) {

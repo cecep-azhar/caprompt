@@ -44,7 +44,10 @@ function renderCards(grid, templates) {
   }
 }
 
-export async function renderLibrary(root) {
+export async function renderLibrary(
+  root,
+  { title = 'Pustaka', subtitle = (n) => `${n} template tersimpan` } = {}
+) {
   root.textContent = '';
 
   const userTemplates = await getAll('templates');
@@ -52,12 +55,16 @@ export async function renderLibrary(root) {
 
   const head = document.createElement('div');
   head.className = 'page-head';
-  head.innerHTML = `
-    <div>
-      <h1 class="page-title">Pustaka</h1>
-      <p class="page-subtitle">${all.length} template tersimpan</p>
-    </div>
-  `;
+  const headInner = document.createElement('div');
+  const h1 = document.createElement('h1');
+  h1.className = 'page-title';
+  h1.textContent = title;
+  headInner.appendChild(h1);
+  const sub = document.createElement('p');
+  sub.className = 'page-subtitle';
+  sub.textContent = subtitle(all.length);
+  headInner.appendChild(sub);
+  head.appendChild(headInner);
   root.appendChild(head);
 
   if (all.length === 0) {

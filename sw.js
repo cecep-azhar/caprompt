@@ -18,6 +18,7 @@ const SHELL = [
   'js/views/builder.js',
   'js/views/history.js',
   'js/views/settings.js',
+  'js/views/placeholder.js',
   'manifest.json',
 ];
 
