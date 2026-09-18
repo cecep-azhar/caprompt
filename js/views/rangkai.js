@@ -86,8 +86,10 @@ export async function renderRangkai(root) {
   const sepLabel = document.createElement('label');
   sepLabel.textContent = 'Pemisah antar prompt';
   sepField.appendChild(sepLabel);
-  const sepInput = document.createElement('input');
-  sepInput.type = 'text';
+  // textarea, bukan <input type="text"> — input tunggal-baris diam-diam
+  // membuang newline, jadi pemisah default berbaris ganda akan terpotong.
+  const sepInput = document.createElement('textarea');
+  sepInput.rows = 2;
   sepInput.value = DEFAULT_CHAIN_SEPARATOR;
   sepField.appendChild(sepInput);
   root.appendChild(sepField);
