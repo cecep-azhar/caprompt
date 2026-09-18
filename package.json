@@ -1,6 +1,6 @@
 {
   "name": "caprompt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "CAPrompt - prompt studio lokal-first, tanpa build step, tanpa dependensi npm",
