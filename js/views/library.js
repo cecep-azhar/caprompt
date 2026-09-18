@@ -81,11 +81,63 @@ export async function renderLibrary(
 
   const searchBar = document.createElement('div');
   searchBar.className = 'search-bar';
-  searchBar.innerHTML = iconSvg('search', { size: 16 });
+  searchBar.style.display = 'flex';
+  searchBar.style.gap = '8px';
+
+  const searchInputWrapper = document.createElement('div');
+  searchInputWrapper.style.flex = '1';
+  searchInputWrapper.style.position = 'relative';
+  searchInputWrapper.style.display = 'flex';
+  searchInputWrapper.style.alignItems = 'center';
+  searchInputWrapper.innerHTML = `<span style="position:absolute; left:12px;">${iconSvg('search', { size: 16 })}</span>`;
+  
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.placeholder = 'Cari berdasarkan judul template...';
-  searchBar.appendChild(searchInput);
+  searchInput.style.width = '100%';
+  searchInput.style.paddingLeft = '36px';
+  searchInputWrapper.appendChild(searchInput);
+  
+  searchBar.appendChild(searchInputWrapper);
+
+  const importBtn = document.createElement('button');
+  importBtn.className = 'btn btn-secondary';
+  importBtn.textContent = 'Import (.json)';
+  importBtn.onclick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const data = JSON.parse(text);
+        // import logic here...
+        alert('Import berhasil (WIP)');
+      } catch (err) {
+        alert('Format JSON tidak valid.');
+      }
+    };
+    input.click();
+  };
+  searchBar.appendChild(importBtn);
+
+  const exportBtn = document.createElement('button');
+  exportBtn.className = 'btn btn-secondary';
+  exportBtn.textContent = 'Export All';
+  exportBtn.onclick = async () => {
+    const data = JSON.stringify(userTemplates, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'caprompt-templates.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  searchBar.appendChild(exportBtn);
+
   root.appendChild(searchBar);
 
   const grid = document.createElement('div');

@@ -124,6 +124,18 @@ async function renderAI(panel) {
   modelRow.appendChild(modelInput);
   const modelDatalist = document.createElement('datalist');
   modelDatalist.id = 'ai-model-list';
+  const presets = [
+    'claude-3-opus-5-ultra', 
+    'claude-3-5-sonnet-4-6-max', 
+    'gemini-3.0-pro-high',
+    'hermes-agent',
+    'open-claw-agent'
+  ];
+  presets.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    modelDatalist.appendChild(opt);
+  });
   modelRow.appendChild(modelDatalist);
   const loadModelsBtn = document.createElement('button');
   loadModelsBtn.type = 'button';

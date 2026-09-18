@@ -7,5 +7,24 @@
   "scripts": {
     "test": "node --test",
     "seed": "node tools/build-seed.mjs"
+  },
+  "main": "sw.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cecep-azhar/caprompt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cecep-azhar/caprompt/issues"
+  },
+  "homepage": "https://github.com/cecep-azhar/caprompt#readme",
+  "devDependencies": {
+    "@tauri-apps/api": "^3.0.0-alpha.0",
+    "@tauri-apps/cli": "^3.0.0-alpha.1"
   }
 }
